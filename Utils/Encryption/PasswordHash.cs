@@ -1,27 +1,54 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace projectNotes.Utils.Encryption
 {
     /// <summary>
-    /// Wrapper encryption clss for hashing passwords
+    /// Wrapper encryption class for hashing passwords
     /// </summary>
     public class PasswordHash
     {
         HashAlgorithm _algorithm;
-        public PasswordHash(string algorithmName)
+        Encoding _encoding;
+        public PasswordHash(string algorithmName, Encoding encoding)
         {
             _algorithm  = GetHashAlgorithm(algorithmName);
+            _encoding = encoding;
         }
 
-
-        public byte[] Hash(string password)
+        public PasswordHash(string algorithmName) : this(algorithmName, Encoding.UTF8)
         {
-            return _algorithm.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
 
 
 
-        public bool CompareHashes(byte[] hash1, byte[] hash2)
+        /// <summary>
+        /// HashPassword is used under the registration when we have to hash the password and convert it back to string in order to store in the database
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns>string version of the password hash</returns>
+        public string HashPassword(string password)
+        {
+            return _encoding.GetString(Hash(password));
+        }
+        private byte[] Hash(string password)
+        {
+            return _algorithm.ComputeHash(_encoding.GetBytes(password));
+        }
+
+
+        /// <summary>
+        /// ComparePasswords is used under the login when we have to compare the password from the database with the one the user entered
+        /// </summary>
+        /// <param name="password"> password that the user inserted under the login process </param>
+        /// <param name="passwordHash"> hash of the password from the database </param>
+        /// <returns> boolean value, true if password hashes match, false if not </returns>
+        public bool ComparePasswords(string password, string passwordHash)
+        {
+            return CompareHashes(_encoding.GetBytes(HashPassword(password)), _encoding.GetBytes(passwordHash));
+        }
+
+        private bool CompareHashes(byte[] hash1, byte[] hash2)
         {
             if (hash1.Length != hash2.Length)
             {

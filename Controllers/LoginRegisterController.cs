@@ -19,6 +19,13 @@ namespace projectNotes.Controllers
             return View();
         }
 
+
+        /// <summary>
+        /// GET action for the Login view
+        /// </summary>
+        /// <param name="model"> User model sent from the View</param>
+        /// <param name="action"> Name of the action possible values - Login, Register</param>
+        /// <returns>Depending on the validation, it can either be Index(LoginRegister) View with validation errors or a LoginSuccess View </returns>
         [HttpPost]
         [ActionName("Login")]
         public IActionResult Login(User model, string action)
@@ -52,20 +59,20 @@ namespace projectNotes.Controllers
 
         private IActionResult LoginLogic(User model, User? userInDB)
         {
+            // did we find the user in the database?
             if(userInDB == null) {
                 Console.WriteLine("User not found");
                 ModelState.AddModelError("ID", "Invalid login or password");
                 return View("Index", model); 
             }
-            var modelPasswordHash = _passwordHash.Hash(model.Password);
-            model.Password = System.Text.Encoding.UTF8.GetString(modelPasswordHash);
-            var userInDBPasswordHash = System.Text.Encoding.UTF8.GetBytes(userInDB.Password);
-            bool passwordMatch = _passwordHash.CompareHashes(System.Text.Encoding.UTF8.GetBytes(model.Password), userInDBPasswordHash);
+
+            bool passwordMatch = _passwordHash.ComparePasswords(model.Password, userInDB.Password);
+
             if (passwordMatch)
             {
                 Console.WriteLine("Login successfull");
                 HttpContext.Session.SetString("username", model.Username);
-
+                HttpContext.Session.SetInt32("userID", userInDB.ID);
 
                 return View("LoginSuccess", new LoginSuccessViewModel() { Username = model.Username, Login = true });
             }
@@ -78,14 +85,16 @@ namespace projectNotes.Controllers
         }
         private IActionResult RegisterLogic(User model, User? userInDB)
         {
+            // did we find the user in the database?
             if(userInDB != null)
             {
                 Console.WriteLine("User already in db");
                 ModelState.AddModelError("ID", "User already exists!");
                 return View("Index", model);
             }
-            byte[] modelPasswordHash = _passwordHash.Hash(model.Password);
-            model.Password = System.Text.Encoding.UTF8.GetString(modelPasswordHash);
+          
+            model.Password = _passwordHash.HashPassword(model.Password);
+            
             _dbContext.Users.Add(model);
             _dbContext.SaveChanges();
 
@@ -100,6 +109,12 @@ namespace projectNotes.Controllers
         public IActionResult LoginSuccess(LoginSuccessViewModel vm)
         {
             return View(vm);
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext?.Session.Clear();
+            return View("Index");
         }
     }
 }

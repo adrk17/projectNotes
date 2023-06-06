@@ -30,6 +30,14 @@
                         </li>
                     </ul>
                 </div>
+                @{
+                    string usr = Context.Session.GetString("username");
+                    if(usr != null){
+                        <form method="post">
+                                <button asp-controller="LoginRegister" asp-action="Logout">Log out</button>
+                        </form>
+                    }
+                }
             </div>
         </nav>
     </header>
