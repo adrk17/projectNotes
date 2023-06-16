@@ -18,18 +18,29 @@ namespace projectNotes.Controllers
 
         public IActionResult Index()
         {
+            
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult AddNote(Note model)
         {
-           
-            var usr = _dbContext.Users.Find(1);
-            Console.WriteLine(usr.ID);
-            Console.WriteLine(usr.Username);
-            Console.WriteLine(usr.Password);
-             
-            return View();
+            if (ModelState.IsValid)
+            {
+                Console.WriteLine("Model is valid");
+                var userId = HttpContext.Session.GetInt32("userID");
+                if (userId != null)
+                {
+                    Console.WriteLine("User ID: " + userId + " is adding a note");
+                    model.UserID = (int)userId;
+                    model.Created_at = DateTime.Now;
+                    model.Updated_at = DateTime.Now;
+                    _dbContext.Notes.Add(model);
+                    _dbContext.SaveChanges();
+                    return View("Index");
+                }
+            }
+
+            return View("Index", model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

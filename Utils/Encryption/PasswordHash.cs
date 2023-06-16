@@ -10,6 +10,7 @@ namespace projectNotes.Utils.Encryption
     {
         HashAlgorithm _algorithm;
         Encoding _encoding;
+        
         public PasswordHash(string algorithmName, Encoding encoding)
         {
             _algorithm  = GetHashAlgorithm(algorithmName);

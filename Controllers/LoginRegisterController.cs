@@ -12,7 +12,6 @@ namespace projectNotes.Controllers
         public LoginRegisterController(ApplicationDatabaseContext dbcontext)
         {
             _dbContext = dbcontext;
-
         }
         public IActionResult Index()
         {
@@ -39,19 +38,15 @@ namespace projectNotes.Controllers
                 {
                     return LoginLogic(model, userInDB);
                 }
-                else if(action == "Register")
+                
+                if(action == "Register")
                 {
                     return RegisterLogic(model, userInDB);
                 }
-                else
-                {
-                    Console.WriteLine("Invalid action");
-                    ModelState.AddModelError("ID", "Invalid action");
-                    return View("Index", model);
-                }
-                
 
-
+                Console.WriteLine("Invalid action");
+                ModelState.AddModelError("ID", "Invalid action");
+                return View("Index", model);
             }
             // If the ModelState is not valid, return the Login view with the validation errors
             return View("Index", model);
@@ -76,12 +71,11 @@ namespace projectNotes.Controllers
 
                 return View("LoginSuccess", new LoginSuccessViewModel() { Username = model.Username, Login = true });
             }
-            else
-            {
-                Console.WriteLine("Hashes incompatible!");
-                ModelState.AddModelError("ID", "Invalid login or password");
-                return View("Index", model);
-            }
+
+            Console.WriteLine("Hashes incompatible!");
+            ModelState.AddModelError("ID", "Invalid login or password");
+            return View("Index", model);
+
         }
         private IActionResult RegisterLogic(User model, User? userInDB)
         {
@@ -102,7 +96,6 @@ namespace projectNotes.Controllers
             HttpContext.Session.SetString("username", model.Username);
 
             return View("LoginSuccess", new LoginSuccessViewModel() { Username = model.Username, Login = false });
-
         }
 
 

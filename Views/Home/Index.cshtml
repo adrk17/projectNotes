@@ -2,7 +2,150 @@
     ViewData["Title"] = "Home Page";
 }
 
+@model Note
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <style>        
+        .notes-container {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          margin: -16px;
+        }
+        
+        .note {
+          background: #fff;
+          border-radius: 7px;
+          box-shadow: 0 2px 5px #ccc;
+          padding: 10px;
+          width: calc(33.33% - 32px);
+          margin: 16px;
+        }
+        
+        .note h1 {
+          font-size: 1.1em;
+          margin-bottom: 6px;
+        }
+        
+        .note p {
+          font-size: 1.1em;
+          margin-bottom: 10px;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+        }
+
+    </style>
+
+    <h1>My Notes</h1>
+    
+    <div>
+        @using (Html.BeginForm("AddNote","Home", FormMethod.Post))
+        {
+            <form asp-controller="Home" asp-action="AddNote" method="post">
+            <style>
+                .form-group {
+                    margin-bottom: 20px;
+                }
+            
+                label {
+                    display: block;
+                    font-size: 18px;
+                    margin-bottom: 5px;
+                    color: #333;
+                    font-weight: bold;
+                }
+            
+                input[type="text"],
+                input[type="password"] {
+                    width: 100%;
+                    padding: 10px;
+                    font-size: 16px;
+                    border-radius: 5px;
+                    border: 1px solid #ddd;
+                }
+            
+                input[type="text"]:focus,
+                input[type="password"]:focus {
+                    outline: none;
+                    border: 1px solid #9c27b0;
+                }
+            </style>
+            
+            <div class="form-group">
+                <label asp-for="Title">Title</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+         
+            <div class="form-group">
+                <label asp-for="Context">Context:</label>
+                <input asp-for="Context" class="form-control" />
+                <span asp-validation-for="Context" class="text-danger"></span>
+            </div>
+        
+                <style>
+                .button-container {
+                    display: flex;
+                    justify-content: left;
+                }
+            
+                button[type="submit"] {
+                    background-color: #4CAF50;
+                    border: none;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px;
+                    cursor: pointer;
+                    border-radius: 4px;
+                }
+                
+                button[type="submit"]:hover {
+                    background-color: #3e8e41;
+                }
+            </style>
+                
+            <div class="button-container">
+                <button type="submit" name="action">Add</button>
+            </div>
+        
+        
+            <style>
+            .login-feedback h1 {
+                margin: 20px 0;
+                padding: 10px;
+                border: 1px solid #f5c6cb;
+                font-size: 24px;
+                background-color: #f8d7da;
+                color: #721c24;
+                border-radius: 4px;
+            }
+            </style>
+        
+            <span asp-validation-for="ID" class="text-danger"></span>
+        </form>
+        }
+    </div>
+    
+    <div class="notes-container">
+        
+        <div class="note">
+            <h1>Note 1</h1>
+            <p>Content 1</p>
+        </div>
+
+        <div class="note">
+            <h1>Note 2</h1>
+            <p>Content 2</p>
+        </div>
+
+        <div class="note">
+            <h1>Note 3</h1>
+            <p>Content 3</p>
+        </div>
+    </div>
+
 </div>

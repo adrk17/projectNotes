@@ -13,7 +13,7 @@ builder.Services.AddDbContext<ApplicationDatabaseContext>(options =>
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromSeconds(1000000);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -32,6 +32,35 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseSession();
+app.Use(async (ctx, next) =>
+{
+    // Check for 404 status code
+    if (ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
+    {
+        //Re-execute the request so the user gets the error page
+        string originalPath = ctx.Request.Path.Value;
+        ctx.Items["originalPath"] = originalPath;
+        await Console.Out.WriteLineAsync(originalPath);
+        ctx.Request.Path = "/Home";
+        await next();
+    }
+    // Check for logged in user
+    else if (!ctx.Session.Keys.Contains("username"))
+    {
+        string originalPath = ctx.Request.Path.Value;
+        ctx.Items["originalPath"] = originalPath;
+        List<string> possibleViews = new List<string> { "/LoginRegister" , "/LoginRegister/Login" };
+        if (!possibleViews.Contains(originalPath))
+        {
+            ctx.Request.Path = "/LoginRegister";
+        }
+        await next();
+    }
+    else
+    {
+        await next();
+    }
+});
 
 app.UseRouting();
 
