@@ -82,6 +82,18 @@
                 <input asp-for="NewNote.Note.Context" class="form-control" />
                 <span asp-validation-for="NewNote.Note.Context" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="NewNote.CategoryString">Category:</label>
+                <input asp-for="NewNote.CategoryString" class="form-control" />
+                <span asp-validation-for="NewNote.Category.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NewNote.TagString">Tags(comma separated):</label>
+                <input asp-for="NewNote.TagString" class="form-control" />
+                <span asp-validation-for="NewNote.TagString" class="text-danger"></span>
+            </div>
         
                 <style>
                 .button-container {
@@ -137,7 +149,14 @@
             {
                 <div class="note">
                     <h1>@note.Note.Title</h1>
+                    @if(note.Category != null){
+                        <h3>@note.Category.Name</h3>
+                    }
                     <p>@note.Note.Context</p>
+                    @foreach (var tag in note.Tags)
+					{
+						<span>#@tag.Name</span>
+					}
                 </div>
             }
        </div>

@@ -29,8 +29,8 @@ namespace projectNotes.Controllers
 
         public IActionResult AddNote(IndexViewModel model)
         {
-            model.NewNote.Tags = new();
-            model.NewNote.Categories = new();
+            model.NewNote.ConvertTags();
+            model.NewNote.ConvertCategory();
             Console.WriteLine(model.NewNote.ToString());
             if (ModelState.IsValid)
             {
@@ -44,6 +44,9 @@ namespace projectNotes.Controllers
                     model.NewNote.Note.Updated_at = DateTime.Now;
                     _dbContext.Notes.Add(model.NewNote.Note);
                     _dbContext.SaveChanges();
+
+                    AddTags(model.NewNote);
+                    AddCategory(model.NewNote);
 
                     model.CompleteNotes = GetNotes();
                     return View("Index", model);
@@ -80,11 +83,47 @@ namespace projectNotes.Controllers
                                      join nc in _dbContext.NoteCategories on c.ID equals nc.CategoryID
                                      where nc.NoteID == note.ID
                                      select c;
-                noteComplete.Categories = categoryQuerry.ToList();
+                noteComplete.Category = categoryQuerry.FirstOrDefault();
                 noteCompletes.Add(noteComplete);
             }
 
             return noteCompletes;
         }
+
+        private void AddTags(NoteComplete nc)
+        {
+            if (nc.Tags.Count <= 0)
+                return;
+
+       
+
+            // Add the tags to the database
+            _dbContext.Tags.AddRange(nc.Tags);
+            _dbContext.SaveChanges();
+
+            Console.WriteLine("Tera printuje najpierw note id potem id tagów xd");
+            Console.WriteLine(nc.Note.ID);
+            foreach (var tag in nc.Tags)
+            {
+                Console.WriteLine(tag.ID);
+                var noteTag = new NoteTag();
+                noteTag.NoteID = nc.Note.ID;
+                noteTag.TagID = tag.ID;
+                _dbContext.NoteTags.Add(noteTag);
+            }
+        }
+
+        private void AddCategory(NoteComplete nc)
+        {
+            if(nc.Category == null)
+                return;
+            _dbContext.Categories.Add(nc.Category);
+            _dbContext.SaveChanges();
+
+            var noteCategory = new NoteCategory();
+            noteCategory.NoteID = nc.Note.ID;
+            noteCategory.CategoryID = nc.Category.ID;
+        }
+
     }
 }

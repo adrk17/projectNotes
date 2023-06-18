@@ -6,7 +6,7 @@ namespace projectNotes.Models
     {
         public Note? Note { get; set; }
         public List<Tag>? Tags { get; set; }
-        public List<Category>? Categories { get; set; }
+        public Category? Category { get; set; }
 
         public override string ToString()
         {
@@ -21,13 +21,34 @@ namespace projectNotes.Models
             {
                 sb.AppendLine(" "+tag.Name);
             }
-            sb.AppendLine("Categories:");
-            foreach (var category in Categories)
-            {
-                sb.AppendLine(" "+category.Name);
-            }
+            
+            sb.AppendLine("Category:");
+            if(Category != null)
+                sb.AppendLine(" " + Category.Name);
             return sb.ToString();
         }
 
+        public string? TagString { get; set; }
+
+        public string? CategoryString { get; set; }
+
+        public void ConvertTags()
+        {
+            if (TagString == null) { Tags = new List<Tag>(); return;}
+
+            var tags = TagString.Split(',');
+            Tags = new List<Tag>();
+            foreach (var tag in tags)
+            {
+                Tags.Add(new Tag { Name = tag });
+            }
+        }
+
+        public void ConvertCategory()
+        {
+            if (CategoryString == null) { Category = new Category(); return;}
+
+            Category = new Category { Name = CategoryString };
+        }
     }
 }
