@@ -39,6 +39,63 @@
     <h1>My Notes</h1>
     
     <div>
+                <h6>Filter by tags:</h6>
+                <span>
+                    @foreach(var tag in Model.FilteredTags){
+                        <form asp-controller="Home" asp-action="FilterBy"  method="post">
+                                <input type="hidden" asp-for="FiltString" value="@tag.Name" />
+                                <input type="hidden" asp-for="FiltOption" value="tag" />
+                                <div class="button-container">
+                                    <button type="submit" name="action" >@tag.Name</button>
+                                </div>
+                        </form>
+                    }
+                </span>
+                <h6>Filter by categories:</h6>
+                <span>
+                @foreach(var category in Model.FilteredCategories){
+                     <form asp-controller="Home" asp-action="FilterBy"  method="post">
+                                <input type="hidden" asp-for="FiltString" value="@category.Name" />
+                                 <input type="hidden" asp-for="FiltOption" value="cat" />
+                                <div class="button-container">
+                                    <button type="submit" name="action" >@category.Name</button>
+                                </div>
+                     </form>
+                }
+                </span>
+
+    </div>
+    <div>
+           <h6>Sort By:</h6>
+           <form asp-controller="Home" asp-action="SortBy"  method="post">
+                      <input type="hidden" asp-for="SortOption" value="title"/>
+                            <div class="button-container">
+                                <button type="submit" name="action" >Title</button>
+                            </div>
+           </form>
+           <form asp-controller="Home" asp-action="SortBy"  method="post">
+                      <input type="hidden" asp-for="SortOption" value="lma"/>
+                            <div class="button-container">
+                                <button type="submit" name="action" >Oldest</button>
+                            </div>
+           </form>
+           <form asp-controller="Home" asp-action="SortBy"  method="post">
+                      <input type="hidden" asp-for="SortOption" value="lmd"/>
+                            <div class="button-container">
+                                <button type="submit" name="action" >Newest</button>
+                            </div>
+           </form>
+           <form asp-controller="Home" asp-action="SortBy"  method="post">
+                      <input type="hidden" asp-for="SortOption" value="cat"/>
+                            <div class="button-container">
+                                <button type="submit" name="action" >Category Name</button>
+                            </div>
+           </form>
+       </div>
+
+
+
+    <div>
         @using (Html.BeginForm("AddNote","Home", FormMethod.Post))
         {
             <form asp-controller="Home" asp-action="AddNote" method="post">
@@ -209,6 +266,8 @@
 
             }
        </div>
+
+     
    
 
 </div>

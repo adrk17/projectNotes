@@ -20,6 +20,8 @@ namespace projectNotes.Controllers
         public IActionResult Index()
         {
             var vm = new IndexViewModel();
+            vm.FilteredTags = GetTags();
+            vm.FilteredCategories = GetCategories();
             vm.CompleteNotes = GetNotes();
             foreach (var cn in vm.CompleteNotes)
             {
@@ -50,6 +52,8 @@ namespace projectNotes.Controllers
                     AddCategory(model.NewNote);
 
                     model.CompleteNotes = GetNotes();
+                    model.FilteredCategories = GetCategories();
+                    model.FilteredTags = GetTags();
                     model.NewNote = null;
                     return View("Index", model);
                 }
@@ -174,13 +178,13 @@ namespace projectNotes.Controllers
             }
 
             _dbContext.SaveChanges();
-            return View("Index", new IndexViewModel() { CompleteNotes = GetNotes() });
+            return View("Index", new IndexViewModel() { CompleteNotes = GetNotes(), FilteredCategories = GetCategories(), FilteredTags = GetTags() });
         }
 
 
         public IActionResult UpdateNote([FromRoute] int ID)
         {
-            return View("Index", new IndexViewModel() { CompleteNotes = GetNotes(), UpdateNoteID = ID });
+            return View("Index", new IndexViewModel() { CompleteNotes = GetNotes(), UpdateNoteID = ID, FilteredCategories = GetCategories(), FilteredTags = GetTags() });
         }
 
         public IActionResult SaveEdit(IndexViewModel model)
@@ -213,6 +217,8 @@ namespace projectNotes.Controllers
 
                     model.UpdateNoteID = null;
                     model.CompleteNotes = GetNotes();
+                    model.FilteredCategories = GetCategories();
+                    model.FilteredTags = GetTags();
                     model.UpdateNote = null;
                     return View("Index", model);
                 }
@@ -296,6 +302,116 @@ namespace projectNotes.Controllers
             noteCategory.CategoryID = nc.Category.ID;
             _dbContext.NoteCategories.Add(noteCategory);
             _dbContext.SaveChanges();
+        }
+
+
+        private List<Tag> GetTags()
+        {
+            var userId = HttpContext.Session.GetInt32("userID");
+            if (userId != null)
+            {
+                var tagsQuery = from t in _dbContext.Tags
+                                join nt in _dbContext.NoteTags on t.ID equals nt.TagID
+                                join n in _dbContext.Notes on nt.NoteID equals n.ID
+                                where n.UserID == userId
+                                select t;
+                var tags = tagsQuery.ToList();
+                return tags;
+            }
+            return null;
+        }
+
+        private List<Category> GetCategories()
+        {
+            var userId = HttpContext.Session.GetInt32("userID");
+            if (userId != null)
+            {
+                var categoriesQuery = from c in _dbContext.Categories
+                                      join nc in _dbContext.NoteCategories on c.ID equals nc.CategoryID
+                                      join n in _dbContext.Notes on nc.NoteID equals n.ID
+                                      where n.UserID == userId
+                                      select c;
+                var categories = categoriesQuery.ToList();
+                return categories;
+            }
+            return null;
+        }
+
+        public IActionResult FilterBy(IndexViewModel vm)
+        {
+            Console.WriteLine("Option: "+vm.FiltString);
+
+            return View("Index", new IndexViewModel() { CompleteNotes = FilterNotes(vm.FiltString, vm.FiltOption), FilteredCategories = GetCategories(), FilteredTags = GetTags()});
+        }
+
+        private List<NoteComplete> FilterNotes(string name, string option)
+        {
+            var userID = HttpContext.Session.GetInt32("userID");
+
+
+
+            var notes = _dbContext.Notes.Where(n => n.UserID == userID).ToList();
+            var noteCompletes = new List<NoteComplete>();
+            foreach (var note in notes)
+            {
+                var noteComplete = new NoteComplete();
+                noteComplete.Note = note;
+
+
+                var tagQuery = from t in _dbContext.Tags
+                               join nt in _dbContext.NoteTags on t.ID equals nt.TagID
+                               where nt.NoteID == note.ID
+                               select t;
+                noteComplete.Tags = tagQuery.ToList();
+
+
+
+                var categoryQuery = from c in _dbContext.Categories
+                                    join nc in _dbContext.NoteCategories on c.ID equals nc.CategoryID
+                                    where nc.NoteID == note.ID
+                                    select c;
+                noteComplete.Category = categoryQuery.FirstOrDefault();
+
+
+                if(option == "tag")
+                {
+                    var tagNameList = noteComplete.Tags.Select(t => t.Name).ToList();
+                    if(tagNameList.Contains(name))
+                        noteCompletes.Add(noteComplete);
+                }
+
+                if(option == "cat")
+                {
+                    if(noteComplete.Category.Name == name)
+                        noteCompletes.Add(noteComplete);
+                }
+            }
+
+            return noteCompletes;
+        }
+
+        public IActionResult SortBy(IndexViewModel vm)
+        {
+            string opt = vm.SortOption;
+            return View("Index", new IndexViewModel() { CompleteNotes = SortNotes(opt, GetNotes()), FilteredCategories = GetCategories(), FilteredTags = GetTags() });
+            
+        }
+
+        private List<NoteComplete> SortNotes(string opt, List<NoteComplete> notes)
+        {
+            switch (opt)
+            {
+                case "title":
+                    return notes.OrderBy(n => n.Note.Title).ToList();
+                case "lma":
+                    return notes.OrderBy(n => n.Note.Updated_at).ToList();
+                case "lmd":
+                    return notes.OrderByDescending(n => n.Note.Updated_at).ToList();
+                case "cat":
+                    return notes.OrderBy(n => n.Category.Name).ToList();
+                default:
+                    return notes;
+            }
         }
     }
 }
