@@ -36,6 +36,9 @@ namespace projectNotes.Models
         {
             if (TagString == null) { Tags = new List<Tag>(); return;}
 
+            TagString = TagString.ToLower();
+            TagString = TagString.Replace(" ", "");
+
             var tags = TagString.Split(',');
             Tags = new List<Tag>();
             foreach (var tag in tags)

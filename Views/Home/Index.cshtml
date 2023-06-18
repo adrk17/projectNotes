@@ -147,17 +147,66 @@
       <div class="notes-container">
             @foreach (var note in Model.CompleteNotes)
             {
-                <div class="note">
-                    <h1>@note.Note.Title</h1>
-                    @if(note.Category != null){
-                        <h3>@note.Category.Name</h3>
-                    }
-                    <p>@note.Note.Context</p>
-                    @foreach (var tag in note.Tags)
-					{
-						<span>#@tag.Name</span>
-					}
-                </div>
+                if(Model.UpdateNoteID != null && Model.UpdateNoteID == note.Note.ID){
+                    <form asp-controller="Home" asp-action="SaveEdit" method="post">
+                        <div class="note">
+                            <div class="form-group">
+                                <label asp-for="UpdateNote.Note.Title">Title</label>
+                                <input asp-for="UpdateNote.Note.Title" class="form-control" value=@note.Note.Title />
+                                <span asp-validation-for="UpdateNote.Note.Title" class="text-danger"></span>
+                            </div>
+         
+                            <div class="form-group">
+                                <label asp-for="UpdateNote.Note.Context">Context:</label>
+                                <input asp-for="UpdateNote.Note.Context" class="form-control" value=@note.Note.Context />
+                                <span asp-validation-for="UpdateNote.Note.Context" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="UpdateNote.CategoryString">Category:</label>
+                                <input asp-for="UpdateNote.CategoryString" class="form-control" value=@note.Category.Name />
+                                <span asp-validation-for="UpdateNote.Category.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="UpdateNote.TagString">Tags(comma separated):</label>
+                                <input asp-for="UpdateNote.TagString" class="form-control" />
+                                <span asp-validation-for="UpdateNote.TagString" class="text-danger"></span>
+                            </div>
+                            <input type="hidden" asp-for="UpdateNote.Note.ID" value="@note.Note.ID" />
+                            <div class="button-container">
+                                <button type="submit" name="action" >Save</button>
+                            </div>
+                    
+                          </div>
+                      </form>
+                }
+                else{
+
+                    <div class="note">
+                        <h1>@note.Note.Title</h1>
+                        @if(note.Category != null){
+                            <h3>@note.Category.Name</h3>
+                        }
+                        <p>@note.Note.Context</p>
+                        @foreach (var tag in note.Tags)
+					    {
+                            Console.WriteLine(tag.Name);
+						    <span>#@tag.Name</span>
+					    }
+                        <form asp-controller="Home" asp-action="DeleteNote" asp-route-id="@note.Note.ID" method="post">
+                                <button type="submit">Delete</button>
+                        </form>
+                        <form asp-controller="Home" asp-action="UpdateNote" asp-route-id="@note.Note.ID" method="post">
+                                <button type="submit">Update</button>
+                        </form>
+
+                    
+                     </div>
+                }
+
+                
+
             }
        </div>
    

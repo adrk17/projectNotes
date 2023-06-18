@@ -5,11 +5,8 @@ namespace projectNotes.Models
 {
     public class NoteTag
     {
-        [Key]
-        [Column(Order = 1)]]
+        public int ID { get; set; }
         public int NoteID { get; set; }
-        [Key]
-        [Column(Order = 2)]
         public int TagID { get; set; }
     }
 }
