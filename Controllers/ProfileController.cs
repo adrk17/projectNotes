@@ -18,5 +18,7 @@ namespace projectNotes.Controllers
         {
             return View("Index", new ProfileModel() {Username = HttpContext.Session.GetString("username")});
         }
+
+        
     }
 }

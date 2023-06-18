@@ -59,8 +59,10 @@ namespace projectNotes.Controllers
                 }
             }
             Console.WriteLine("Model not valid");
-            var indexViewModel = new IndexViewModel();
-            return View("Index", indexViewModel);
+            model.CompleteNotes = GetNotes();
+            model.FilteredCategories = GetCategories();
+            model.FilteredTags = GetTags();
+            return View("Index", model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -121,7 +123,7 @@ namespace projectNotes.Controllers
 
         private void AddCategory(NoteComplete nc)
         {
-            if (nc.Category == null)
+            if (nc.Category == null || nc.Category.Name == null)
                 return;
             _dbContext.Categories.Add(nc.Category);
             _dbContext.SaveChanges();
@@ -225,8 +227,11 @@ namespace projectNotes.Controllers
 
             }
             Console.WriteLine("Model not valid");
-            var indexViewModel = new IndexViewModel();
-            return View("Index", indexViewModel);
+            model.CompleteNotes = GetNotes();
+            model.FilteredCategories = GetCategories();
+            model.FilteredTags = GetTags();
+            ModelState.AddModelError("UpdateNoteID", "Title and Context fields cannot be empty!");
+            return View("Index", model);
         }
 
         private void UpdateTags(NoteComplete nc)
@@ -272,7 +277,7 @@ namespace projectNotes.Controllers
 
         private void UpdateCategory(NoteComplete nc)
         {
-            if (nc.Category == null)
+            if (nc.Category == null || nc.Category.Name == null)
                 return;
             var noteCategoriesQuery = from ncat in _dbContext.NoteCategories
                                       where ncat.NoteID == nc.Note.ID
