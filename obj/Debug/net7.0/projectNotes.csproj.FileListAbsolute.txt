@@ -203,3 +203,4 @@ C:\Users\szymo\Desktop\hel\projectNotes\obj\Debug\net7.0\projectNotes.pdb
 C:\Users\szymo\Desktop\hel\projectNotes\obj\Debug\net7.0\projectNotes.genruntimeconfig.cache
 C:\Users\szymo\Desktop\hel\projectNotes\obj\Debug\net7.0\ref\projectNotes.dll
 C:\Users\szymo\Desktop\hel\projectNotes\bin\Debug\net7.0\Nuget.config
+D:\C C++ C#\C#\PZ2\lab11\projectNotes\projectNotes\bin\Debug\net7.0\Nuget.config

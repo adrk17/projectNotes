@@ -2,7 +2,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-@model Note
+@model IndexViewModel
 
 <div class="text-center">
     <style>        
@@ -72,15 +72,15 @@
             </style>
             
             <div class="form-group">
-                <label asp-for="Title">Title</label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="NewNote.Note.Title">Title</label>
+                <input asp-for="NewNote.Note.Title" class="form-control" />
+                <span asp-validation-for="NewNote.Note.Title" class="text-danger"></span>
             </div>
          
             <div class="form-group">
-                <label asp-for="Context">Context:</label>
-                <input asp-for="Context" class="form-control" />
-                <span asp-validation-for="Context" class="text-danger"></span>
+                <label asp-for="NewNote.Note.Context">Context:</label>
+                <input asp-for="NewNote.Note.Context" class="form-control" />
+                <span asp-validation-for="NewNote.Note.Context" class="text-danger"></span>
             </div>
         
                 <style>
@@ -125,27 +125,22 @@
             }
             </style>
         
-            <span asp-validation-for="ID" class="text-danger"></span>
+            <span asp-validation-for="NewNote.Note.ID" class="text-danger"></span>
         </form>
         }
     </div>
     
-    <div class="notes-container">
+   
         
-        <div class="note">
-            <h1>Note 1</h1>
-            <p>Content 1</p>
-        </div>
-
-        <div class="note">
-            <h1>Note 2</h1>
-            <p>Content 2</p>
-        </div>
-
-        <div class="note">
-            <h1>Note 3</h1>
-            <p>Content 3</p>
-        </div>
-    </div>
+      <div class="notes-container">
+            @foreach (var note in Model.CompleteNotes)
+            {
+                <div class="note">
+                    <h1>@note.Note.Title</h1>
+                    <p>@note.Note.Context</p>
+                </div>
+            }
+       </div>
+   
 
 </div>

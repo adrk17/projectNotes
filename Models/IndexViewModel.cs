@@ -2,7 +2,9 @@
 {
     public class IndexViewModel
     {
-        public List<Note> Notes { get; set; }
-        public Note NewNote { get; set; }
+        public List<NoteComplete>? CompleteNotes { get; set; }
+        public NoteComplete? NewNote { get; set; }
+        public NoteComplete? UpdateNote { get; set; }
+        public NoteComplete? DeleteNote { get; set; }
     }
 }

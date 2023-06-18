@@ -93,7 +93,17 @@ namespace projectNotes.Controllers
             _dbContext.SaveChanges();
 
             Console.WriteLine("Registration successfull");
-            HttpContext.Session.SetString("username", model.Username);
+
+            // Getting ID that the database has henerated in order to log in the new user
+            userInDB = _dbContext.Users.Where(u => u.Username == model.Username).FirstOrDefault();
+            // Error handling in case of database malfunction
+            if(userInDB == null) {
+                Console.WriteLine("Database error, could not find the new user in the db");
+                ModelState.AddModelError("ID", "Database error, could not find the new user in the db");
+                return View("Index", model);
+            }
+            HttpContext.Session.SetInt32("userID", userInDB.ID);
+            HttpContext.Session.SetString("username", userInDB.Username);
 
             return View("LoginSuccess", new LoginSuccessViewModel() { Username = model.Username, Login = false });
         }
