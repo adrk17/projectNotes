@@ -274,8 +274,9 @@
             @foreach (var note in Model.CompleteNotes)
             {
                 if(Model.UpdateNoteID != null && Model.UpdateNoteID == note.Note.ID){
-                    <form asp-controller="Home" asp-action="SaveEdit" method="post">
-                        <div class="note">
+                    <div class="note">
+                        <form asp-controller="Home" asp-action="SaveEdit" method="post">
+                        
                             <div class="form-group">
                                 <label asp-for="UpdateNote.Note.Title">Title</label>
                                 <input asp-for="UpdateNote.Note.Title" class="form-control" value=@note.Note.Title />
@@ -304,23 +305,40 @@
                                 <button type="submit" name="action" >Save</button>
                             </div>
                     
-                          </div>
-                      </form>
+                          
+                        </form>
+                    </div>
                 }
                 else{
+                    
+                    <style>
+                        .note {
+                            position: relative;
+                        }
+
+                        .note h1 {
+                            position: absolute;
+                            font-size: small;
+                            top: 0; 
+                            right: 0;
+                            padding: 5px 10px; 
+                            background-color: #fff8dc;
+                            border-top-left-radius: 5px; 
+                            border-bottom-left-radius: 5px; 
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+                        }
+                    </style>
 
                     <div class="note">
-                        <h1>@note.Note.Title</h1>
                         @if(note.Category != null){
-                            <h3>@note.Category.Name</h3>
+                            <h1>@note.Category.Name</h1>
                         }
-                        <p>@note.Note.Context</p>
-                        @foreach (var tag in note.Tags)
-					    {
-                            Console.WriteLine(tag.Name);
-						    <span>#@tag.Name</span>
-					    }
                         
+                        <h3>@note.Note.Title</h3>
+
+                        <p>@note.Note.Context</p>
+                        
+
                         <style>
                             .btn-update-delete {
                                 display: flex;
@@ -347,22 +365,24 @@
                             }
                             
                         </style>
-                        
+
                         <div class="btn-update-delete">
                             <form asp-controller="Home" asp-action="DeleteNote" asp-route-id="@note.Note.ID" method="post">
-                                    <button class="delete-btn" type="submit">Delete</button>
+                                <button class="delete-btn" type="submit">Delete</button>
                             </form>
                             <form asp-controller="Home" asp-action="UpdateNote" asp-route-id="@note.Note.ID" method="post">
-                                    <button class="update-btn" type="submit">Update</button>
+                                <button class="update-btn" type="submit">Update</button>
                             </form>
                         </div>
                         
-                     </div>
+                        @foreach (var tag in note.Tags)
+                        {
+                            Console.WriteLine(tag.Name);
+                            <span>#@tag.Name</span>
+                        }
+
+                    </div>
                 }
             }
        </div>
-
-     
-   
-
 </div>
