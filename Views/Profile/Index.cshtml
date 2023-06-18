@@ -6,3 +6,96 @@
 }
 
 <h2>@Model.Username</h2>
+
+  <h3>@Model.SuccessMsg</h3>
+
+ <form asp-controller="Profile" asp-action="ChangePassword" method="post">
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+    
+        label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+    
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border: 1px solid #9c27b0;
+        }
+    </style>
+
+    <div class="form-group">
+        <label asp-for="Password">Old password:</label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NewPassword">New password:</label>
+        <input asp-for="NewPassword" class="form-control" type="password" />
+        <span asp-validation-for="NewPassword" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NewPasswordRe">Repeat new password:</label>
+        <input asp-for="NewPasswordRe" class="form-control" type="password" />
+        <span asp-validation-for="NewPasswordRe" class="text-danger"></span>
+    </div>
+
+        <style>
+        .button-container {
+            display: flex;
+            justify-content: left;
+        }
+    
+        button[type="submit"] {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+        
+    <div class="button-container">
+        <button type="submit" name="action" value="Change">Change Password</button>  
+    </div>
+
+
+    <style>
+    .login-feedback h1 {
+        margin: 20px 0;
+        padding: 10px;
+        border: 1px solid #f5c6cb;
+        font-size: 24px;
+        background-color: #f8d7da;
+        color: #721c24;
+        border-radius: 4px;
+    }
+    </style>
+</form>
