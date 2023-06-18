@@ -14,7 +14,7 @@
         }
         
         .note {
-          background: #fff;
+          background: #FFFFE0;
           border-radius: 7px;
           box-shadow: 0 2px 5px #ccc;
           padding: 10px;
@@ -39,8 +39,46 @@
     <h1>My Notes</h1>
     
     <div>
-                <h6>Filter by tags:</h6>
-                <span>
+        <h6>Filter by tags:</h6>
+        <style>
+            .button-container {
+                display: inline-flex; 
+                justify-content: center;
+                align-items: center;
+                margin-right: 10px;
+            }
+            
+            .button-container button {
+                padding: 10px;
+                font-size: 16px;
+                background-color: #ddd;
+                border: none;
+                border-radius: 5px;
+            }
+            
+            .button-group {
+                display: flex;
+                flex-wrap: wrap; 
+                justify-content: center; 
+                margin-bottom: 10px;
+            }
+            
+            .button-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-right: 10px;
+            }
+            
+            .button-container button {
+                padding: 10px;
+                font-size: 16px;
+                background-color: #ddd;
+                border: none;
+                border-radius: 5px;
+            }
+        </style>
+                <div class="button-group">
                     @foreach(var tag in Model.FilteredTags){
                         <form asp-controller="Home" asp-action="FilterBy"  method="post">
                                 <input type="hidden" asp-for="FiltString" value="@tag.Name" />
@@ -50,9 +88,9 @@
                                 </div>
                         </form>
                     }
-                </span>
+                </div>
                 <h6>Filter by categories:</h6>
-                <span>
+                <div class="button-group">
                 @foreach(var category in Model.FilteredCategories){
                      <form asp-controller="Home" asp-action="FilterBy"  method="post">
                                 <input type="hidden" asp-for="FiltString" value="@category.Name" />
@@ -62,11 +100,13 @@
                                 </div>
                      </form>
                 }
-                </span>
+                </div>
 
     </div>
     <div>
-           <h6>Sort By:</h6>
+        <h6>Sort By:</h6>
+        <div class="button-group">
+        
            <form asp-controller="Home" asp-action="SortBy"  method="post">
                       <input type="hidden" asp-for="SortOption" value="title"/>
                             <div class="button-container">
@@ -85,13 +125,14 @@
                                 <button type="submit" name="action" >Newest</button>
                             </div>
            </form>
-           <form asp-controller="Home" asp-action="SortBy"  method="post">
-                      <input type="hidden" asp-for="SortOption" value="cat"/>
-                            <div class="button-container">
-                                <button type="submit" name="action" >Category Name</button>
-                            </div>
-           </form>
-       </div>
+            <form asp-controller="Home" asp-action="SortBy"  method="post">
+                <input type="hidden" asp-for="SortOption" value="cat"/>
+                <div class="button-container">
+                    <button type="submit" name="action" >Category Name</button>
+                </div>
+            </form>
+        </div>
+   </div>
 
 
 
@@ -99,8 +140,21 @@
         @using (Html.BeginForm("AddNote","Home", FormMethod.Post))
         {
             <form asp-controller="Home" asp-action="AddNote" method="post">
-            <style>
+                <style>
+                .form-container {
+                    border: 1px solid #ddd; 
+                    padding: 20px;
+                    width: 30%; 
+                    margin: 40px auto; 
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    border-radius: 15px;
+                    background: #FFFFE0;
+                }
+                            
                 .form-group {
+                    width: 100%;
                     margin-bottom: 20px;
                 }
             
@@ -126,36 +180,19 @@
                     outline: none;
                     border: 1px solid #9c27b0;
                 }
+                
+                
             </style>
-            
-            <div class="form-group">
-                <label asp-for="NewNote.Note.Title">Title</label>
-                <input asp-for="NewNote.Note.Title" class="form-control" />
-                <span asp-validation-for="NewNote.Note.Title" class="text-danger"></span>
-            </div>
-         
-            <div class="form-group">
-                <label asp-for="NewNote.Note.Context">Context:</label>
-                <input asp-for="NewNote.Note.Context" class="form-control" />
-                <span asp-validation-for="NewNote.Note.Context" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="NewNote.CategoryString">Category:</label>
-                <input asp-for="NewNote.CategoryString" class="form-control" />
-                <span asp-validation-for="NewNote.Category.Name" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="NewNote.TagString">Tags(comma separated):</label>
-                <input asp-for="NewNote.TagString" class="form-control" />
-                <span asp-validation-for="NewNote.TagString" class="text-danger"></span>
-            </div>
-        
-                <style>
+                
+            <style>
                 .button-container {
                     display: flex;
-                    justify-content: left;
+                    justify-content: center;
+                    width: 100%;
+                }
+                
+                .add-btn {
+                    width: 100%;
                 }
             
                 button[type="submit"] {
@@ -176,10 +213,42 @@
                     background-color: #3e8e41;
                 }
             </style>
+            
+                <div class="form-container">
+                    <div class="form-group">
+                        <label asp-for="NewNote.Note.Title">Title</label>
+                        <input asp-for="NewNote.Note.Title" class="form-control" />
+                        <span asp-validation-for="NewNote.Note.Title" class="text-danger"></span>
+                    </div>
+                 
+                    <div class="form-group">
+                        <label asp-for="NewNote.Note.Context">Context:</label>
+                        <input asp-for="NewNote.Note.Context" class="form-control" />
+                        <span asp-validation-for="NewNote.Note.Context" class="text-danger"></span>
+                    </div>
+        
+                    <div class="form-group">
+                        <label asp-for="NewNote.CategoryString">Category:</label>
+                        <input asp-for="NewNote.CategoryString" class="form-control" />
+                        <span asp-validation-for="NewNote.Category.Name" class="text-danger"></span>
+                    </div>
+        
+                    <div class="form-group">
+                        <label asp-for="NewNote.TagString">Tags(comma separated):</label>
+                        <input asp-for="NewNote.TagString" class="form-control" />
+                        <span asp-validation-for="NewNote.TagString" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="button-container">
+                        <button class="add-btn" type="submit" name="action">Add</button>
+                    </div>
+                    
+                </div>
                 
-            <div class="button-container">
-                <button type="submit" name="action">Add</button>
-            </div>
+        
+                
+                
+            
         
         
             <style>
@@ -251,19 +320,45 @@
                             Console.WriteLine(tag.Name);
 						    <span>#@tag.Name</span>
 					    }
-                        <form asp-controller="Home" asp-action="DeleteNote" asp-route-id="@note.Note.ID" method="post">
-                                <button type="submit">Delete</button>
-                        </form>
-                        <form asp-controller="Home" asp-action="UpdateNote" asp-route-id="@note.Note.ID" method="post">
-                                <button type="submit">Update</button>
-                        </form>
-
-                    
+                        
+                        <style>
+                            .btn-update-delete {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                margin-top: 10px;
+                            }
+                            
+                            .btn-update-delete form {
+                                margin-right: 10px;
+                            }
+                            
+                            .btn-update-delete button.delete-btn {
+                                padding: 10px;
+                                font-size: 16px;
+                                background-color: #ff4040; 
+                                color: white;
+                                border-radius: 5px;
+                            }
+                                
+                            .btn-update-delete button.update-btn {
+                                padding: 10px;
+                                font-size: 16px;
+                            }
+                            
+                        </style>
+                        
+                        <div class="btn-update-delete">
+                            <form asp-controller="Home" asp-action="DeleteNote" asp-route-id="@note.Note.ID" method="post">
+                                    <button class="delete-btn" type="submit">Delete</button>
+                            </form>
+                            <form asp-controller="Home" asp-action="UpdateNote" asp-route-id="@note.Note.ID" method="post">
+                                    <button class="update-btn" type="submit">Update</button>
+                            </form>
+                        </div>
+                        
                      </div>
                 }
-
-                
-
             }
        </div>
 

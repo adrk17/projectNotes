@@ -44,7 +44,32 @@
                     string usr = Context.Session.GetString("username");
                     if(usr != null){
                         <form method="post">
-                                <button asp-controller="LoginRegister" asp-action="Logout">Log out</button>
+                            
+                            <style>
+                                .logout-container {
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    margin-top: 10px;
+                                }
+                                
+                                .logout-btn form {
+                                    margin-right: 10px;
+                                }
+                                
+                                .logout-btn button.delete-btn {
+                                    padding: 10px;
+                                    font-size: 16px;
+                                    background-color: #ff4040; 
+                                    color: white;
+                                    border-radius: 5px;
+                                }
+                            </style>
+
+                            <div class="logout-container">
+                                <button class="logout-btn" asp-controller="LoginRegister" asp-action="Logout">Log out</button>
+                            </div>
+
                         </form>
                     }
                 }
