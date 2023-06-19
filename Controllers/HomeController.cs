@@ -321,7 +321,8 @@ namespace projectNotes.Controllers
                                 where n.UserID == userId
                                 select t;
                 var tags = tagsQuery.ToList();
-                return tags;
+                var noDuplicates = tags.DistinctBy(t=> t.Name).ToList();
+                return noDuplicates;
             }
             return null;
         }
@@ -337,7 +338,9 @@ namespace projectNotes.Controllers
                                       where n.UserID == userId
                                       select c;
                 var categories = categoriesQuery.ToList();
-                return categories;
+
+                var noDupCategories = categories.DistinctBy(t => t.Name).ToList();
+                return noDupCategories;
             }
             return null;
         }
@@ -387,7 +390,7 @@ namespace projectNotes.Controllers
 
                 if(option == "cat")
                 {
-                    if(noteComplete.Category.Name == name)
+                    if(noteComplete.Category != null && noteComplete.Category.Name == name)
                         noteCompletes.Add(noteComplete);
                 }
             }
@@ -413,7 +416,7 @@ namespace projectNotes.Controllers
                 case "lmd":
                     return notes.OrderByDescending(n => n.Note.Updated_at).ToList();
                 case "cat":
-                    return notes.OrderBy(n => n.Category.Name).ToList();
+                    return notes.OrderBy(n =>n.Category.Name).ToList();
                 default:
                     return notes;
             }
